@@ -18,7 +18,7 @@ while True:
     #informa para o usario qual foi o n° gerado
     print(f'O valor do dado é:  {n}')
     print("")
-#blablbalbalablabalab
+    
     #questona se o usario quer continuar com o programar
     input_user = input("vc que rodar o dado denovo? Responda com Y = sim e N = não.")
 
