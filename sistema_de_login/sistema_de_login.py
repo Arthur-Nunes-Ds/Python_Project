@@ -1,71 +1,107 @@
-#bibliotecas
-import time
-import os
+#info:
+    #======================================================
+    #atenção esse codigo está comendado em pt-br e ingles/
+    #Attention this code is commanded in pt-br and english
+    #======================================================
+    #linguagem/language: python
+    #Feito por/Made by: Arthur Nunes de Carvalho
+    #objetivo: criar um sistema de login intermetiario usado as bibliotecas 'nativas' do python/
+    #objective: create an intermediate login system using python'native' libraries
+    #titulo: sitema de login/
+    #title: login system
+
+#bibliotecas/libraries
+    #inportando só uma função e a renomeando/importing just one function and renaming it
+from time import sleep as delay
+from os import system as comand
 import json
 
-#criar um var q já ler a var "externa"
+#facilitar ná hora da escrita é de ender o que tá dizendo/
+# making writing easier is understanding what you are saying
+def clear(): return(comand("cls"))
+
+#criar um var q já ler a var "externa"/create a var that already reads the "external" var
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor:
         logins_amarzernes = dict(json.load(arquivo_lidor))
 
 def cria_conta():
     print("criar conta")
 
-    #vars já pedindos o input do usario
+    #vars já pedindos so input's do usuário/vars already asking for user input
     user_login = input("digite um login: ")
     user_senha = input("digite uma senha: ")
     
-    #verificar se o login foi inserido estiver na var "externa"
+    #verificar se o login foi inserido estiver na var "externa"/check if the login entered is in the "external" var
     if user_login in logins_amarzernes:
-        #se o usario ele executura os seguintes passos
+        #se o usuário ele executura os seguintes passos/if the user who performs the following steps
 
         print('o "login" já esite')
         input1 = input('o "login" já esite /n deja loga-lo ? Responda com Y para sim e N para não:')
 
-        #ver se o "input1" = "y" ou = 'n'
+        #ver se o "input1" = "y" ou = 'n'/see if "input1" = "y" ou = 'n'
         if input1 == "Y" or "y":
-            #se for sim ele chama a parte de login
+            delay(2)
+            clear()
+            #se for sim ele chama a parte de login/If yes, it calls the login part
             login_conta(0)
         elif input1 == "n" or "N":
-            #se for não ele chama a parte de criar
+            #se for não ele chama a parte de criar/If it is not, it calls the create part
             print('escolha outro "login" ')
+            delay(2)
+            clear()
             cria_conta()
     else:
-        #caso o 'login' não der comflito ele vai salva na var "externa"
+        #caso o 'login' não der conflito ele vai salvar na var "externa"/
+        #if the 'login' does not give conflict it will be saved in the "external" var
         logins_amarzernes.setdefault(user_login, user_senha)
         with open("sistema_de_login/dados.json", "w") as escrever:
             json.dump(logins_amarzernes, escrever, indent=2)
-        #limpa o terminal e chama a parte de login
-        os.system("cls")
-        print("Login")
+        #limpa o terminal e chama a parte de login/clear the terminal and call the login part
+        delay(2)
+        clear()
         login_conta(0)
             
 def login_conta(erro:int):
-    #vars de input/processo autualizado
-    user_login = input("Usuario: ")
-    user_senha = input("Senha: ")
+    print("Login")
+    #vars de input ou processo autualizado/updated input or process stick
+    user_login : str = input("Usuario: ") 
+    user_senha : str = input("Senha: ") 
     user_correct = False
     senha_correct = False
 
-    #verefica se user esite
+    #verificar se o user exite/ check if user exists
     if user_login in logins_amarzernes.keys():
         user_correct = True
     
-    #verifica a senha do user
-    if user_senha in logins_amarzernes[user_login]: 
-        senha_correct = True
-    
-    #verefica o user/senha são verdairas
+    if user_correct:
+        #verificar a senha do user/ check user password
+        if user_senha in logins_amarzernes[user_login]: 
+            senha_correct = True
+        
+    #verificar o user e senha são verdadeiras/ 
+    #check the username and password are true
     if user_correct and senha_correct:
         print("acesso liberado")
-        #finaliza o programa
+        #abre ou executa o arquivo "protegido"opens or executes the "protected" file
+        #estrutura, *=diretorio ou o que q for executa:/
+        #structure, *=directory or whatever executes:
+        #comand("start *")
+        comand("start sistema_de_login/segredo.txt")
+        #finaliza o programa/
+        #ends the program
         EncodingWarning()
     else:
         print("login/senha incorretas")
         #verefica as tentavias do usario depois de 5 ele finaliza o programa sem  
-        #libera para usario
+        #libera para usario/
+        #check the user's attempts after 5 he ends the program without
+        #release to user
         if erro != 5:
             print(f"Tentativas: {erro}")
-            #add mas um ponto no erro
+            delay(2)
+            clear()
+            #add mais um ponto no erro
+            #add one more point to the error
             login_conta(erro + 1)
         if erro == 6:
             print("muitas tentitas seguidas") 
@@ -73,19 +109,47 @@ def login_conta(erro:int):
 
 def  incio_do_programa():
     print("Seja Bem vindo")
+    #var input do user se ele já tem uma conta no sistema 
+    #var user input if he already has an account in the system
     ja_posui_conta = input("vc já tem uma conta? Responda com Y para sim e N para não: ")
+
+    #verificar a resposta do user/
+    #check user response
     if ja_posui_conta == 'y' or ja_posui_conta == 'Y':
-        time.sleep(2)
-        os.system("cls")
+        #tempo
+        delay(2)
+        #limpar o terminal/
+        #clear the terminal
+        clear()
+        #chama o bloco de verificar ser user e senha já e talvez o sistema é lierado/
+        #calls the block to check if user and password already and maybe the system is read
         login_conta(0)
     elif ja_posui_conta == 'n' or ja_posui_conta == "N":
-        time.sleep(2)
-        os.system("cls")
+        delay(2)
+        clear()
+        #chama o bloco de criação de conta/
+        #calls the account creation block
         cria_conta()
+    #ver ser o carter é valido seguindo o padrão ABNT 2/
+    #see if the character is valid following the ABNT 2 standard
     else:
         print("caracter invalido")
-        time.sleep(2)
-        os.system("cls")
+        delay(2)
+        clear()
         incio_do_programa()
 
+#chama o inicio do codigo
+#call the beginning of the code
 incio_do_programa()
+
+#oiê, você deve estás se perguntando onde você usar esse código na sua vida, Sinceramente não sei e não me importo, mas tenho algo a dizer ao
+#seu doido varido que está lendo esta mensagem, este código foi difícil, então se você puder usá-lo para alguma merda, eu agradeceria. 
+# Sério, se você quiser usá-lo para 'esconder' pornografia, eu não sei, estou apenas dados os meu parabéns por você ler esta merda de código. 
+#Um beijo na bunda e até man.
+#☆*: .｡. o(≧▽≦)o .｡.:*☆
+
+#Hey, you must be wondering where your going to use this code in your life, I honestly don't know and I don't care, but I have something to say 
+#to your crazy asshole who is reading this message, this code was difficult, so if you can use it for some shit, I would appreciate it. Seriously, 
+#if you want to use it to 'hide' porn, I don't know, I'm just giving you my congratulations for reading this shitty code and comment. A kiss on the ass 
+#and see you man.
+#☆*: .｡. o(≧▽≦)o .｡.:*☆
