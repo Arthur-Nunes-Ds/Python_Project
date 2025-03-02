@@ -88,4 +88,4 @@ def  incio_do_programa():
         os.system("cls")
         incio_do_programa()
 
-#incio_do_programa()
+incio_do_programa()
