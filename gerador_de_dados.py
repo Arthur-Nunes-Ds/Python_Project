@@ -3,6 +3,14 @@ import random
 import time
 import os 
 
+def clear():
+    #pega o nome do sitema
+    sytem_name = os.name
+    #ver qual é o nome do sitma
+    if os.name == 'posix':
+        #aqui é para o codspace(git_hub)
+        return os.system("clear")
+    
 #parte em loop
 def numero_aleatorio(lados:int):
     print('')#só para dar um espaço 
@@ -41,7 +49,7 @@ def numero_aleatorio(lados:int):
     elif input_user == 'y' or input_user == 'Y':
         #limpar o terminal
         time.sleep(3)#3secondsc
-        os.system("cls")
+        clear()
         numero_aleatorio(lados)
         pass
 

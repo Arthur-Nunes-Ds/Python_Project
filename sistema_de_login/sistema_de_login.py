@@ -13,12 +13,21 @@
 #bibliotecas/libraries
     #inportando só uma função e a renomeando/importing just one function and renaming it
 from time import sleep as delay
-from os import system as comand
+import os 
 import json
 
 #facilitar ná hora da escrita é de ender o que tá dizendo/
 # making writing easier is understanding what you are saying
-def clear(): return(comand("cls"))
+def clear():
+    #pega o nome do sitema
+    #get the system name
+    sytem_name = os.name
+    #ver qual é o nome do sitma
+    #see what the name of the site is
+    if os.name == 'posix':
+        #aqui é para o codspace(git_hub)
+        #here is for codspace(git_hub)
+        return os.system("clear")
 
 #criar um var q já ler a var "externa"/create a var that already reads the "external" var
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor:
@@ -89,8 +98,8 @@ def login_conta(erro:int):
         #abre ou executa o arquivo "protegido"opens or executes the "protected" file
         #estrutura, *=diretorio ou o que q for executa:/
         #structure, *=directory or whatever executes:
-        #comand("start *")
-        comand("start sistema_de_login/segredo.txt")
+        #os.system("start *")
+        os.system("start sistema_de_login/segredo.txt")
         #finaliza o programa/
         #ends the program
         EncodingWarning()
