@@ -3,6 +3,19 @@ import random
 import time
 import os 
 
+def clear():
+        #pega o nome do sitema
+    #get the system name
+    sytem_name = os.name
+    #ver qual é o nome do sitma
+    #see what the name of the site is
+    if os.name == 'nt':
+        #aqui é para o windwos
+        return os.system("cls")
+    else:
+        #aqui é para o linux e macos
+        return os.system("clear")
+    
 #parte em loop
 def numero_aleatorio(lados:int):
     print('')#só para dar um espaço 
@@ -41,7 +54,7 @@ def numero_aleatorio(lados:int):
     elif input_user == 'y' or input_user == 'Y':
         #limpar o terminal
         time.sleep(3)#3secondsc
-        os.system("cls")
+        clear()
         numero_aleatorio(lados)
         pass
 

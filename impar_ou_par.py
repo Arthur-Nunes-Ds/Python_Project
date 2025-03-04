@@ -4,14 +4,26 @@
     #objetivo: pega um n° do user é ver ser ele é impar ou par
     #titulo: impar ou par
 #bibliotecas:
-from os import system 
+import os
 from time import sleep as time
+
+#comando para limpar o terminal todo
+def clear():
+    #pega o nome do sitema
+    sytem_name = os.name
+    #ver qual é o nome do sitma
+    if os.name == 'nt':
+        #aqui é para o windwos
+        return os.system("cls")
+    else:
+        #aqui é para o linux e macos
+        return os.system("clear")
+
 #para o codigo entrar em loop
 while True:
     #input do user
     print("========================================")
-    input_user = input("insira um numero inteiro:/n ")
-    print('caso desja sair digite "exit" ou "quit"')
+    input_user = input('caso desja sair digite "exit" ou "quit"\n"insira um numero inteiro:')
     print("========================================")
     #comando para sair do sitema(exit/quit)
     #str'.lower()'== deixa tudo dendro da str em minisculo
@@ -19,7 +31,7 @@ while True:
         #time de 1.5 s
         time(1.5)
         #limpar a tela
-        system("cls")
+        clear()
         #finaliza o o código
         print("==================================")
         print("ok, até\n☆*: .｡. o(≧▽≦)o .｡.:*☆")
@@ -30,14 +42,14 @@ while True:
         #verefica se tem resto na divissão n°/2 
         if int(input_user)%2 == 0:
             time(1.5)
-            system("cls")
+            clear()
             #fala quer é par
             print("====")
             print("par")
             print("====")
         else:
             time(1.5)
-            system("cls")
+            clear()
             print("=====")
             #fala q é impar
             print("impar")
@@ -45,10 +57,10 @@ while True:
     #tratamento de erro
     else:
         time(1.5)
-        system("cls")
+        clear()
         #quase xingar o user de burro
         print("============================")
         print("SÓ DIGITE NUMEROS INTEIROS!!")
         print("============================")
     time(1.5)
-    system("cls")
+    clear()

@@ -13,13 +13,37 @@
 #bibliotecas/libraries
     #inportando só uma função e a renomeando/importing just one function and renaming it
 from time import sleep as delay
-from os import system as comand
+import os 
 import json
 
 #facilitar ná hora da escrita é de ender o que tá dizendo/
 # making writing easier is understanding what you are saying
-def clear(): return(comand("cls"))
 
+def clear():
+        #pega o nome do sitema
+    #get the system name
+    sytem_name = os.name
+    #ver qual é o nome do sitma
+    #see what the name of the site is
+    if os.name == 'nt':
+        #aqui é para o windwos /here is for windwos
+        return os.system("cls")
+        #quer porra eu fasso para resoulver o erro "o código está inacessível .pylance"?
+        #a) me jogo de um predio
+        #b) manda o python+code toma no cú
+        #c) me mato
+        #d) taco a minha maquina do 29.65 andar
+        # pss: já resouvir a porra desse erro, basta ir nas extenssões do vscode é desativa só a pylance e depois reativa-lá. =D
+        #what the fuck do I do to solve the error "code is inaccessible .pylance"?
+        #a) I throw myself off a building
+        #b) I tell python+code to go fuck itself
+        #c) I kill myself
+        #d) I throw my machine off the 29.65th floor
+        # pss: I already solved this damn error, just go to the vscode extensions and deactivate only pylance and then reactivate it. =D       
+    else:
+        #aqui é para o linux e macos/ here is for linux and macos
+        return os.system("clear")
+        
 #criar um var q já ler a var "externa"/create a var that already reads the "external" var
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor:
         logins_amarzernes = dict(json.load(arquivo_lidor))
@@ -89,8 +113,8 @@ def login_conta(erro:int):
         #abre ou executa o arquivo "protegido"opens or executes the "protected" file
         #estrutura, *=diretorio ou o que q for executa:/
         #structure, *=directory or whatever executes:
-        #comand("start *")
-        comand("start sistema_de_login/segredo.txt")
+        #os.system("start *")
+        os.system("start sistema_de_login/segredo.txt")
         #finaliza o programa/
         #ends the program
         EncodingWarning()
