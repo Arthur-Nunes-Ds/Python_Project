@@ -13,6 +13,7 @@
 #bibliotecas/libraries
     #inportando só uma função e a renomeando/importing just one function and renaming it
 from time import sleep as delay
+import sys
 import os 
 import json
 
@@ -20,12 +21,11 @@ import json
 # making writing easier is understanding what you are saying
 
 def clear():
-        #pega o nome do sitema
-    #get the system name
-    sytem_name = os.name
+    #pega o nome do sitema e
+    #get the system name and
     #ver qual é o nome do sitma
     #see what the name of the site is
-    if os.name == 'nt':
+    if sys.platform.startswith:
         #aqui é para o windwos /here is for windwos
         return os.system("cls")
         #quer porra eu fasso para resoulver o erro "o código está inacessível .pylance"?

@@ -6,13 +6,13 @@
 #bibliotecas:
 import os
 from time import sleep as time
+import sys 
 
 #comando para limpar o terminal todo
 def clear():
     #pega o nome do sitema
-    sytem_name = os.name
     #ver qual é o nome do sitma
-    if os.name == 'nt':
+    if sys.platform.startswith("win32"):
         #aqui é para o windwos
         return os.system("cls")
     else:

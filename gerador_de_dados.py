@@ -2,14 +2,11 @@
 import random
 import time
 import os 
+import sys 
 
 def clear():
-        #pega o nome do sitema
-    #get the system name
-    sytem_name = os.name
     #ver qual é o nome do sitma
-    #see what the name of the site is
-    if os.name == 'nt':
+    if sys.platform.startswith("win32"):
         #aqui é para o windwos
         return os.system("cls")
     else:
