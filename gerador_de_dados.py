@@ -1,3 +1,8 @@
+#info:
+    #liguagems: python
+    #Feito por: Arthur Nunes de Carvalho
+    #objetivo: pega um n° maior ou igual á 2 é gerar um n° alétorio a partir dessa info
+    #titulo: gerador de dados
 #importação de biblioetecas 
 import random
 import time
