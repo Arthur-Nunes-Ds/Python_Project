@@ -54,12 +54,14 @@ while True:
                bi2_a.append(bi2)
                bi3_a.append(bi3)
                bi4_a.append(bi4)
+               media = (Bi1+Bi2+Bi3+Bi4)/4
           else:
-               bi1_a.append(str("null"))
-               bi2_a.append(str("null"))
-               bi3_a.append(str("null"))
-               bi4_a.append(str("null"))
+               bi1_a.append(0)
+               bi2_a.append(0)
+               bi3_a.append(0)
+               bi4_a.append(0)
                print("erro")
+               media = 50
      #caso ao contario ele avisa ao user q ove algum erro ná hora de digitar a nota
     else:
          bi1_a.append(str("null"))
@@ -68,7 +70,7 @@ while True:
          bi4_a.append(str("null"))
          print("erro")
      #verificador se o aluno passou ou não
-    if media >= 70 or (str(bi1)=="null"):
+    if media >= 70:
          pasado_str = "aprovado"
     elif media <= 35:
          pasado_str = "reprovado"
