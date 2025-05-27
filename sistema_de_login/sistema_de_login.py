@@ -10,7 +10,7 @@
 #bibliotecas
 import sys
 import os 
-import json
+import json 
 import bcrypt
 #inportando só uma função e a renomeando  
 from time import sleep as delay
@@ -27,7 +27,7 @@ def clear():
         #aqui é para o linux e macos
         return os.system("clear")
         
-#criar um var q já ler a var "externa"
+#criar um "var" q já ler a var "externa"
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor:
         logins_amarzernes = dict(json.load(arquivo_lidor))
 
@@ -45,18 +45,17 @@ def cria_conta():
         #se o usuário ele executura os seguintes passos
 
         print('o "login" já existe \n "login" already exists')
-        input1 = input('o "login" já exite deja loga-lo ? Responda com Y para sim e N para não\nDoes the "login" site already allow you to log in? Answer with Y for yes and N for no:')
+        input1 = input('o "login" já exite deja loga-lo ? Responda com "S" para sim e "N" para não\nDoes the "login" site already allow you to log in? Answer with "Y" for yes and "N" for no:')
 
-        #ver se o "input1" = "y" ou = "n"
-        if input1 == "Y" or "y":
-           
+        #ver se o "input1" = "y/s" ou = "n"
+        if input1.upper() == (("S") or ("Y")):
             clear()
             #se for sim ele chama a parte de login
             login_conta(0)
-        elif input1 == "n" or "N":
+        elif input1.upper() == "N":
             #se for não ele chama a parte de criar
             print('escolha outro "login"\n choose another "login"')
-           
+
             clear()
             cria_conta()
     else:
@@ -123,15 +122,14 @@ def  incio_do_programa():
     print("Seja Bem vindo/welcome")
     print("======================")
     #var input do user se ele já tem uma conta no sistema 
-    ja_posui_conta = input("vc já tem uma conta? Responda com Y para sim e N para não\nDo you already have an account? Answer with Y for yes and N for no:")
-
+    ja_posui_conta = input("vc já tem uma conta? Responda com S para sim e N para não\nDo you already have an account? Answer with Y for yes and N for no:")
     #verificar a resposta do user
-    if ja_posui_conta == 'y' or ja_posui_conta == 'Y':
+    if ja_posui_conta.upper() == (("Y") or ("S")):
         #limpar o terminal
         clear()
         #chama o bloco de verificar ser user e senha já e talvez o sistema é lierado
         login_conta(0)
-    elif ja_posui_conta == 'n' or ja_posui_conta == "N":
+    elif ja_posui_conta.upper() == "N":
         clear()
         #chama o bloco de criação de conta
         cria_conta()
