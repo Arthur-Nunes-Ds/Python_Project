@@ -12,24 +12,24 @@ import bcrypt
 import pandas as pd
 #inportando só uma função e a renomeando  
 from time import sleep as delay
-from glob import glob 
+from glob import glob
+
+#criar um "var" q já ler a var "externa"
+with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor: logins_amarzernes = dict(json.load(arquivo_lidor))
 
 #facilitar ná hora da escrita é de ender o que tá dizendo
 def clear():
     #pega o nome do sitema e
     #ver qual é o nome do sitma
-    if sys.platform.startswith:
+    if sys.platform.startswith("win"):
         #aqui é para o windwos 
         delay(2)
         return os.system("cls")
     else:
         #aqui é para o linux e macos
+        delay(2)
         return os.system("clear")
         
-#criar um "var" q já ler a var "externa"
-with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor:
-        logins_amarzernes = dict(json.load(arquivo_lidor))
-
 def cria_conta():
     print("==========================================")
     print("      criar conta/create account")
@@ -89,22 +89,41 @@ def cria_conta():
         login_conta(0)
 
 def gerenciador_files(is_login = False, user = ""):
-   #vars
+   #var-list
     arquivo_list = []
+    n_arquivos = []
+    #adicisona os nomme do arquivo
+    for i in glob('*.*',root_dir="./sistema_de_login/arquivo_protegidos"): arquivo_list.append(i)
+    #pasa a qauntidade de idex e adiciona em outra lista
+    n_idex_arquivo = len(arquivo_list)
+    for f in range(n_idex_arquivo): n_arquivos.append(f)
     #loop
     while True:
         #verifique se o o login é "verdadeiro"
         if is_login == True:
             #mostra qual o usuario fez o login 
+            #ler todos os arquivos do diretorio arquivos protegidos 
             print(f"Seja bem vindo: {user}\n")
+            #ler todos os arquivos no diretorio e o aplicar na var "arquivo_list"
+            #criar uma tabela com os programas
+            tabela = pd.DataFrame(arquivo_list, columns=["Arquivos"])
+            print(f"{tabela}\n")
             #pega o input do usuario 
             input_user = input("selecione uma opeção: ")
-            #ler todos os arquivos do diretorio arquivos protegidos 
-            for arquirvo in glob('*.*',root_dir="./sistema_de_login/arquivo_protegidos"):
-                #adisona os arquivos ná lista
-                arquivo_list.append(arquirvo)
-            #verefica se o user deseja deslogar    
-            if input_user.upper() in ["DESLOGAR", 'LOUGAUTE']:
+            #criar uma var espesifica para efitar erro de tipo de var
+            int_input_user :int = None
+            if input_user.isdigit(): int_input_user = int(input_user)
+            #ver se o que usuario escrevel é um arquivo presente na pasada "arquivo_protegidos"
+            if int_input_user in n_arquivos:
+                #ver qual é o sitema operacional(windows, baseado em linux e/ou mac) e escreve o comando correto para abrir o arquivo. 
+                #pss: o código está sendo desenvolvido para sistemas descktop
+                if sys.platform.startswith("win"): os.system(f"powershell start ./sistema_de_login/arquivo_protegidos/'{arquivo_list[int_input_user]}'")
+                elif sys.platform.startswith("darwin"): os.system(f'cd ./sistema_de_login/arquivo_protegidos && open "{arquivo_list[int_input_user]}"')
+                else: os.system(f'cd ./sistema_de_login/arquivo_protegidos && xdg-open "{arquivo_list[int_input_user]}"')
+                delay(4)
+                clear()
+            #verefica se o user deseja deslogar 
+            elif input_user.upper() in ["DESLOGAR", 'LOUGAUTE']:
                 clear()
                 #perguntar se o user realmente prente fazer isso
                 if input("você realmente deseja sair? ").upper() in ["SIM", "S", "Y", "YES"]:
@@ -126,7 +145,7 @@ def gerenciador_files(is_login = False, user = ""):
                 print("opeção/comando não reconhecido")
                 clear()
                 gerenciador_files(is_login,user)
-        else: init()
+        else: print("init")
 
 def login_conta(erro:int):
     print("========================")
