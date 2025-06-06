@@ -18,7 +18,7 @@ from glob import glob
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor: logins_amarzernes = dict(json.load(arquivo_lidor))
 
 #const 
-FILE_SISTEM  = os.getcwd()
+FILE_SISTEM = os.getcwd()
 
 #facilitar ná hora da escrita é de ender o que tá dizendo
 def clear():
