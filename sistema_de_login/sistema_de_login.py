@@ -17,6 +17,9 @@ from glob import glob
 #criar um "var" q já ler a var "externa"
 with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor: logins_amarzernes = dict(json.load(arquivo_lidor))
 
+#const 
+FILE_SISTEM  = os.getcwd()
+
 #facilitar ná hora da escrita é de ender o que tá dizendo
 def clear():
     #pega o nome do sitema e
@@ -117,10 +120,10 @@ def gerenciador_files(is_login = False, user = ""):
             if int_input_user in n_arquivos:
                 #ver qual é o sitema operacional(windows, baseado em linux e/ou mac) e escreve o comando correto para abrir o arquivo. 
                 #pss: o código está sendo desenvolvido para sistemas descktop
-                if sys.platform.startswith("win"): os.system(f"powershell start ./sistema_de_login/arquivo_protegidos/'{arquivo_list[int_input_user]}'")
-                elif sys.platform.startswith("darwin"): os.system(f'cd ./sistema_de_login/arquivo_protegidos && open "{arquivo_list[int_input_user]}"')
-                else: os.system(f'cd ./sistema_de_login/arquivo_protegidos && xdg-open "{arquivo_list[int_input_user]}"')
-                delay(4)
+                if sys.platform.startswith("win"): os.system(f"powershell start ./sistema_de_login/arquivo_protegidos/'{arquivo_list[int_input_user]}'")#windwos
+                elif sys.platform.startswith("darwin"): os.system(f'cd ./sistema_de_login/arquivo_protegidos && open "{arquivo_list[int_input_user]}"')#mac
+                else: os.system(f'cd ./sistema_de_login/arquivo_protegidos && xdg-open "{arquivo_list[int_input_user]}"')#linux
+                delay(3)
                 clear()
             #verefica se o user deseja deslogar 
             elif input_user.upper() in ["DESLOGAR", 'LOUGAUTE']:
@@ -135,6 +138,22 @@ def gerenciador_files(is_login = False, user = ""):
                         #mas como tem o "continue" então ó código condinua traquilamente
                     continue
                 else: gerenciador_files(is_login,user)
+            #add os arquivos
+            elif input_user.upper() in ["ADICIONAR ARQUIVO", "ADD", "ADD FILE"]:
+                input_file = input("Escreva onde está o arquivo: ")
+                #aqui é nesario para garantir que o "\", isso é nessario para o comando no terminal e como possilvemte o usario vai digitar
+                input_file = (fr"{input_file}")
+                #ver se o arquivor exite
+                if os.path.isfile(input_file):
+                    if sys.platform.startswith("win"): os.system(fr'powershell;  move "{input_file}" "{FILE_SISTEM}\sistema_de_login\arquivo_protegidos"')#win
+                    else: os.system(fr'mv "{input_file}" "{FILE_SISTEM}\sistema_de_login\arquivo_protegidos"')#mac e linux
+                    #retorno para o user
+                    print("arquivo adicionado no sistema com suscesso")
+                    delay(2)
+                    #para altualizar a tabela 
+                    gerenciador_files(is_login, user)
+                else:
+                    print("Arquivo não existe")
             #ver ser o usuario deseja sair
             elif input_user.upper() in ["EXIT","SAIR"]:
                 clear()
@@ -229,4 +248,5 @@ def init():
         print("caracter invalido/invalid character")
         clear()
         init()
+#gerenciador_files(True, "test")
 init()
