@@ -186,7 +186,6 @@ def login_conta(erro:int):
     user_correct = False
     senha_correct = False
     
-
     #verificar se o user exite
     if user_login in logins_amarzernes.keys():
         user_correct = True
