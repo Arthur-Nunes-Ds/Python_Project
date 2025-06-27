@@ -7,17 +7,19 @@
 #bibliotecas
 import sys
 import os 
-import json 
+import sqlite3
+import secrets
+import smtplib
 import bcrypt
 import pandas as pd
+
 #inportando só uma função e a renomeando  
+from email.message import EmailMessage
+from datetime import datetime, timedelta
 from time import sleep as delay
 from glob import glob
 
-#criar um "var" q já ler a var "externa"
-with open("sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lidor: logins_amarzernes = dict(json.load(arquivo_lidor))
-
-#const 
+#const: 
 FILE_SISTEM = os.getcwd()
 
 #facilitar ná hora da escrita é de ender o que tá dizendo
@@ -32,7 +34,106 @@ def clear():
         #aqui é para o linux e macos
         delay(2)
         return os.system("clear")
-        
+
+def exit(user_input):
+    if user_input.upper() in ["EXIT","SAIR"]:
+        clear()
+        print("ok tachau!!\nok bay!!")
+        sys.exit()
+    else:
+        return 
+
+def verifica_user_email(email, user):
+    #conector o python com a db 
+    condb = sqlite3.connect("sistema_de_login/tabela_user.db")
+    #um objeto para eu boter manipular via SQL o db
+    editor_db = condb.cursor()
+
+    #verifica se o USER já existe
+    editor_db.execute("SELECT 1 FROM TABELA_USER WHERE USERNAME = ?", (user,))
+    login = editor_db.fetchone() is not None
+    #verifica se o EMAIL já existe
+    editor_db.execute("SELECT 1 FROM TABELA_USER WHERE EMAIL = ?", (email,))
+    email = editor_db.fetchone() is not None
+
+    #salva alteração caso aja e fecha o conexão
+    condb.close()
+
+    return login, email
+
+def eviar_email(destinatario: str):
+    #var
+    token = secrets.token_urlsafe(5)
+     # dados do remetente
+    EMAIL_EMISSOR = '' # <-- email 
+    SENHA = ''  # <-- Senha de aplicativo do Google
+    #montar o e-mail, estrutura basica
+    msg = EmailMessage()
+    msg['Subject'] = 'Reset de Senha'
+    msg['From'] = EMAIL_EMISSOR
+    msg['To'] = destinatario
+    # corpo do e-mail, pode ser HTML
+    msg.set_content(f"""
+    Olá!
+
+    Você solicitou a redefinição da sua senha.
+
+     Aqui está o código para redefinir sua senha:
+     {token}
+
+    Este códiem 1 hora.go expira  Se você não solicitou isso, ignore este e-mail.
+
+    Atenciosamente,
+    0games7
+    """)
+    #aqui é para caso ocorra um erro  
+    try:
+        # conectar ao servidor SMTP do Gmail
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            #"loga na conta"
+            smtp.login(EMAIL_EMISSOR, SENHA)  
+            #enviar e-mail
+            smtp.send_message(msg) 
+        print("E-mail enviado com sucesso!")
+     #caso acontesa um erro ele informa o erro   
+    except Exception as e:
+        print("Erro ao enviar e-mail:", e)
+    
+    expira_em = datetime.now() + timedelta(hours=1)
+    while True:
+        agora = datetime.now()
+        #ver qual é o token e confirma liberando para a redifinição de senha
+        user_input = input("insira o código: ")
+        exit(user_input)
+        if agora > expira_em:
+            print("Token expirado! Solicite um novo.")
+            return "erro"
+        if user_input.upper() == token.upper():
+            clear()
+            new_senha = input("digite uma nova senha: ")        
+            #codificador da senha 
+            senha_cripito = str(bcrypt.hashpw(new_senha.encode(encoding="utf-8"), bcrypt.gensalt(8)))
+            #caso o 'login'/email não der conflito ele vai salvar no db
+            condb = sqlite3.connect("sistema_de_login/tabela_user.db")
+            editor_db = condb.cursor()
+            #salva tudo na db nás sua derterminadas colunas
+            editor_db.execute("UPDATE TABELA_USER SET SENHA = ? WHERE EMAIL = ?", (senha_cripito, destinatario))
+            condb.commit()
+            condb.close()
+            print("senha alterada com sucesso")
+            #limpa o terminal e chama a parte de login
+            clear()
+            break
+        else:
+            print("código errado")
+            return "erro"
+    login_conta(0)
+
+def erro_digitacao():
+    print("caracter invalido")
+    clear()
+    return 
+
 def cria_conta():
     print("==========================================")
     print("      criar conta/create account")
@@ -45,26 +146,23 @@ def cria_conta():
     #vars já pedindos so input's do usuário
     user_login = input("digite um login/enter a login: ")
     #ver se o user deseja sair do programa
-    if user_login.upper() in ["EXIT","SAIR"]:
-        clear()
-        print("ok tachau!!\nok bay!!")
-        sys.exit()
-
+    exit(user_login)
     user_senha = input("digite uma senha/enter a password: ")
-    if user_senha.upper() in ["EXIT","SAIR"]:
-        clear()
-        print("ok tachau!!\nok bay!!")
-        sys.exit()
-        
-    #verificar se o login foi inserido estiver na var "externa"
-    if user_login in logins_amarzernes:
-        #se o usuário ele executura os seguintes passos
+    exit(user_senha)
+    user_email = input("digite um e-mail: ")
+    exit(user_email)
+    login , email = verifica_user_email(user_email,user_login)
+    
+    #para evitar escrever na db
+    if user_senha == "" or user_login == "" or user_email == "":
+        print("digite um valor nos campos ") 
+        cria_conta()
 
-        print('o "login" já existe \n "login" already exists')
-        input1 = input('o "login" já exite deja loga-lo ? Responda com "S" para sim e "N" para não\n \
-                       Does the "login" site already allow you to log in? Answer with "Y" for yes and "N" for no:')
+    #ver se o login ou e-mail já exite na db
+    if login or email:
+        print("login/e-mail já exite!")
+        input1 = input('deja logar ná conta ? Responda com "S" para sim e "N" para não: ')
         print('digite "sair" para finalizar o código')
-
         #ver se o "input1" = "y/s" ou = "n"
         if input1.upper() in ["S", "Y", "SIM", "YES"]:
             clear()
@@ -72,22 +170,25 @@ def cria_conta():
             login_conta(0)
         elif input1.upper() in ["NO", "N", "NAO", "NÃO"]:
             #se for não ele chama a parte de criar
-            print('escolha outro "login"\n choose another "login"')
+            print('escolha outro "login"')
             clear()
             cria_conta()
         elif input1.upper() in ["EXIT","SAIR"]:
-            clear()
-            print("ok tachau!!\nok bay!!")
-            sys.exit()
+            exit(input1)
+        else: 
+            erro_digitacao()
+            login_conta()
     else:
         #codificador da senha 
         senha_cripito = str(bcrypt.hashpw(user_senha.encode(encoding="utf-8"), bcrypt.gensalt(8)))
-        #caso o 'login' não der conflito ele vai salvar na var "externa"
-        logins_amarzernes.setdefault(user_login, senha_cripito)
-        with open("sistema_de_login/dados.json", "w") as escrever:
-            json.dump(logins_amarzernes, escrever, indent=2)
+        #caso o 'login'/email não der conflito ele vai salvar no db
+        condb = sqlite3.connect("sistema_de_login/tabela_user.db")
+        editor_db = condb.cursor()
+        #salva tudo na db nás sua derterminadas colunas
+        editor_db.execute("INSERT INTO TABELA_USER (USERNAME, SENHA, EMAIL) VALUES (?, ?, ?)",(user_login, senha_cripito, user_email))
+        condb.commit()
+        condb.close()
         #limpa o terminal e chama a parte de login
-       
         clear()
         login_conta(0)
 
@@ -156,15 +257,13 @@ def gerenciador_files(is_login = False, user = ""):
                     print("Arquivo não existe")
             #ver ser o usuario deseja sair
             elif input_user.upper() in ["EXIT","SAIR"]:
-                clear()
-                print("ok tachau!!\nok bay!!")
-                sys.exit()
+                exit(input_user)
             #tratamento de erro
             else: 
                 print("opeção/comando não reconhecido")
                 clear()
                 gerenciador_files(is_login,user)
-        else: print("init")
+        else: init()
 
 def login_conta(erro:int):
     print("========================")
@@ -174,23 +273,23 @@ def login_conta(erro:int):
     print("========================\n")
     #vars de input ou processo autualizado
     user_login : str = input("Usuario/user: ") 
-    if user_login.upper() in ["EXIT","SAIR"]:
-        clear()
-        print("ok tachau!!\nok bay!!")
-        sys.exit()
+    exit(user_login)
     user_senha : str = input("Senha/password: ") 
-    if user_senha.upper() in ["EXIT","SAIR"]:
-        clear()
-        print("ok tachau!!\nok bay!!")
-        sys.exit()
+    exit(user_senha)
     user_correct = False
     senha_correct = False
     
-    #verificar se o user exite
-    if user_login in logins_amarzernes.keys():
-        user_correct = True
-        #pega a senha cripitada em str
-        text = logins_amarzernes[user_login]
+    #conector o python com a db 
+    condb = sqlite3.connect("sistema_de_login/tabela_user.db")
+    #um objeto para eu boter manipular via SQL o db
+    editor_db = condb.cursor()
+
+    editor_db.execute("SELECT SENHA FROM TABELA_USER WHERE USERNAME = ?", (user_login,))
+    resultado = editor_db.fetchone()
+    condb.close()
+
+    if resultado:
+        text = resultado[0] 
         #remove as parte "b'" e á "'" 
         text_modfication = text.replace("b'",""); text_modfication = text_modfication.replace("'","")
         #converte as parte em str para byte
@@ -199,25 +298,32 @@ def login_conta(erro:int):
         byte_senha = text_modfication.encode(); user_senha_crypito = user_senha.encode(encoding="utf-8")
         #verefica se o user digitol a senha certa
         if bcrypt.checkpw(user_senha_crypito, byte_senha):
-            senha_correct = True
+           senha_correct, user_correct = True 
+    else:
+        print("usuário não encontrado")
 
     #verificar o user e senha são verdadeiras
     if user_correct and senha_correct:
         clear()
-        print("acesso liberado/free access\n")
+        print("acesso liberado")
         gerenciador_files(True, user_login)
     else:
-        print("login ou senha incorretas/Incorrect login or password")
-        #verefica as tentavias do usario depois de 5 ele finaliza o programa sem  
-        #libera para usario
-        if erro != 5:
-            print(f"Tentativas/attempts: {erro}")
-            clear()
-            #add mais um ponto no erro
-            login_conta(erro + 1)
-        if erro == 6:
-            print("muitas tentativas seguidas\nmany attempts in a row") 
-            sys.exit()
+        print("login ou senha incorretas")
+        input_user = input("vc esqueceu a senha caso? s/n :")
+        if input_user.upper() ==  "S":
+            if eviar_email() == "erro":
+                login_conta(erro + 1)
+        else:
+            #verefica as tentavias do usario depois de 5 ele finaliza o programa sem  
+            #libera para usario
+            if erro != 5:
+                print(f"Tentativas: {erro}")
+                clear()
+                #add mais um ponto no erro
+                login_conta(erro + 1)
+            if erro == 6:
+                print("muitas tentativas seguidas") 
+                sys.exit()
 
 def init():
     clear()
@@ -239,13 +345,10 @@ def init():
         #chama o bloco de criação de conta
         cria_conta()
     elif ja_posui_conta.upper() in ["SAIR","EXIT"]:
-        clear()
-        print("ok tachau!!\nok bay!!")
-        sys.exit()
+        exit(ja_posui_conta)
     #ver ser o carter é valido seguindo o padrão ABNT 2
-    else:
-        print("caracter invalido/invalid character")
-        clear()
+    else: 
+        erro_digitacao() 
         init()
-#gerenciador_files(True, "test")
+
 init()

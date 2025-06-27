@@ -8,7 +8,6 @@ import os
 import bcrypt
 import json   
 
-
 #cria "um dicinorio temporario"
 with open("./app_sistema_de_login/dados.json", "r", encoding= "utf-8") as arquivo_lido: 
     user_and_senha = dict(json.load(arquivo_lido))
@@ -17,6 +16,7 @@ with open("./app_sistema_de_login/dados.json", "r", encoding= "utf-8") as arquiv
 def main(page: ft.Page):
     #vars 
     erro = 1
+
     #função para cadastra o usario apos o mesmo clicar no botão cadastrar
     def cadastrar(e):
         #pega só o input do user
@@ -44,7 +44,8 @@ def main(page: ft.Page):
             #zera os campos
             txt_nome.value = ""
             txt_senha.value = ""
-            page.update()            
+            page.update() 
+
     #função para logar com user
     def logar(e):
         #vars
